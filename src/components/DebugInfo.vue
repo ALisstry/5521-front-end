@@ -1,9 +1,9 @@
 <template>
   <div class="card">
-    <h2>🐛 调试信息</h2>
+    <h2>{{ t('debugInfo.title') }}</h2>
     <div class="marketplace-actions">
-      <button @click="clearDebug">清空调试信息</button>
-      <button @click="exportDebugInfo">📤 导出调试信息</button>
+      <button @click="clearDebug">{{ t('debugInfo.clear') }}</button>
+      <button @click="exportDebugInfo">{{ t('debugInfo.export') }}</button>
     </div>
     <div ref="debugInfo" class="debug-info"></div>
   </div>
@@ -11,10 +11,20 @@
 
 <script>
 import { clearDebug, exportDebugInfo as exportDebug } from '../utils/helpers'
+import { getTranslation } from '../utils/i18n'
 
 export default {
   name: 'DebugInfo',
+  props: {
+    language: {
+      type: String,
+      default: 'en',
+    },
+  },
   methods: {
+    t(key) {
+      return getTranslation(this.language, key)
+    },
     addDebugInfo(message) {
       const timestamp = new Date().toLocaleTimeString()
       this.$refs.debugInfo.innerHTML += `[${timestamp}] ${message}<br>`

@@ -1,27 +1,42 @@
 <template>
   <div class="card">
-    <h2>📝 合约地址设置</h2>
+    <h2>{{ t('contractSetup.title') }}</h2>
     <div class="contract-setup">
       <div class="contract-item">
-        <h3>💰 稳定币合约</h3>
-        <input v-model="stablecoinAddr" type="text" placeholder="0x..." class="contract-address" />
-        <button @click="setStablecoinContract">设置合约地址</button>
+        <h3>{{ t('contractSetup.stablecoin.title') }}</h3>
+        <input
+          v-model="stablecoinAddr"
+          type="text"
+          :placeholder="t('common.placeholderAddress')"
+          class="contract-address"
+        />
+        <button @click="setStablecoinContract">{{ t('contractSetup.stablecoin.button') }}</button>
         <div :class="['status', stablecoinStatusType]" v-if="stablecoinStatusMessage">
           {{ stablecoinStatusMessage }}
         </div>
       </div>
 
       <div class="contract-item">
-        <h3>🎨 NFT合约</h3>
-        <input v-model="nftAddr" type="text" placeholder="0x..." class="contract-address" />
-        <button @click="setNFTContract">设置合约地址</button>
+        <h3>{{ t('contractSetup.nft.title') }}</h3>
+        <input
+          v-model="nftAddr"
+          type="text"
+          :placeholder="t('common.placeholderAddress')"
+          class="contract-address"
+        />
+        <button @click="setNFTContract">{{ t('contractSetup.nft.button') }}</button>
         <div :class="['status', nftStatusType]" v-if="nftStatusMessage">{{ nftStatusMessage }}</div>
       </div>
 
       <div class="contract-item">
-        <h3>🏪 市场合约</h3>
-        <input v-model="marketplaceAddr" type="text" placeholder="0x..." class="contract-address" />
-        <button @click="setMarketplaceContract">设置合约地址</button>
+        <h3>{{ t('contractSetup.marketplace.title') }}</h3>
+        <input
+          v-model="marketplaceAddr"
+          type="text"
+          :placeholder="t('common.placeholderAddress')"
+          class="contract-address"
+        />
+        <button @click="setMarketplaceContract">{{ t('contractSetup.marketplace.button') }}</button>
         <div :class="['status', marketplaceStatusType]" v-if="marketplaceStatusMessage">
           {{ marketplaceStatusMessage }}
         </div>
@@ -34,9 +49,16 @@
 import web3Service from '../services/web3Service'
 import contractService from '../services/contractService'
 import { isValidAddress } from '../utils/helpers'
+import { getTranslation } from '../utils/i18n'
 
 export default {
   name: 'ContractSetup',
+  props: {
+    language: {
+      type: String,
+      default: 'en',
+    },
+  },
   data() {
     return {
       stablecoinAddr: '',
@@ -51,17 +73,20 @@ export default {
     }
   },
   methods: {
+    t(key) {
+      return getTranslation(this.language, key)
+    },
     setStablecoinContract() {
       const address = this.stablecoinAddr.trim()
 
       if (!web3Service.web3) {
-        this.stablecoinStatusMessage = '❌ 请先连接 MetaMask'
+        this.stablecoinStatusMessage = this.t('contractSetup.stablecoin.notConnected')
         this.stablecoinStatusType = 'error'
         return
       }
 
       if (!isValidAddress(address)) {
-        this.stablecoinStatusMessage = '❌ 请输入有效的以太坊地址'
+        this.stablecoinStatusMessage = this.t('contractSetup.stablecoin.invalid')
         this.stablecoinStatusType = 'error'
         return
       }
@@ -69,15 +94,15 @@ export default {
       try {
         contractService.setWeb3(web3Service.web3)
         const contract = contractService.setStablecoinContract(address)
-        this.stablecoinStatusMessage = '✅ 稳定币合约设置成功！'
+        this.stablecoinStatusMessage = this.t('contractSetup.stablecoin.success')
         this.stablecoinStatusType = 'success'
-        this.$emit('debug-info', `稳定币合约地址: ${address}`)
+        this.$emit('debug-info', `Stablecoin contract address: ${address}`)
         this.$emit('stablecoin-contract-set', contract)
         this.testStablecoinConnection(contract)
       } catch (error) {
-        this.stablecoinStatusMessage = '❌ 合约设置失败: ' + error.message
+        this.stablecoinStatusMessage = this.t('contractSetup.stablecoin.failed') + error.message
         this.stablecoinStatusType = 'error'
-        this.$emit('debug-info', `稳定币合约设置错误: ${error.message}`)
+        this.$emit('debug-info', `Stablecoin contract error: ${error.message}`)
       }
     },
 
@@ -85,13 +110,13 @@ export default {
       const address = this.nftAddr.trim()
 
       if (!web3Service.web3) {
-        this.nftStatusMessage = '❌ 请先连接 MetaMask'
+        this.nftStatusMessage = this.t('contractSetup.nft.notConnected')
         this.nftStatusType = 'error'
         return
       }
 
       if (!isValidAddress(address)) {
-        this.nftStatusMessage = '❌ 请输入有效的以太坊地址'
+        this.nftStatusMessage = this.t('contractSetup.nft.invalid')
         this.nftStatusType = 'error'
         return
       }
@@ -99,15 +124,15 @@ export default {
       try {
         contractService.setWeb3(web3Service.web3)
         const contract = contractService.setNFTContract(address)
-        this.nftStatusMessage = '✅ NFT合约设置成功！'
+        this.nftStatusMessage = this.t('contractSetup.nft.success')
         this.nftStatusType = 'success'
-        this.$emit('debug-info', `NFT合约地址: ${address}`)
+        this.$emit('debug-info', `NFT contract address: ${address}`)
         this.$emit('nft-contract-set', contract)
         this.testNFTConnection(contract)
       } catch (error) {
-        this.nftStatusMessage = '❌ NFT合约设置失败: ' + error.message
+        this.nftStatusMessage = this.t('contractSetup.nft.failed') + error.message
         this.nftStatusType = 'error'
-        this.$emit('debug-info', `NFT合约设置错误: ${error.message}`)
+        this.$emit('debug-info', `NFT contract error: ${error.message}`)
       }
     },
 
@@ -115,13 +140,13 @@ export default {
       const address = this.marketplaceAddr.trim()
 
       if (!web3Service.web3) {
-        this.marketplaceStatusMessage = '❌ 请先连接 MetaMask'
+        this.marketplaceStatusMessage = this.t('contractSetup.marketplace.notConnected')
         this.marketplaceStatusType = 'error'
         return
       }
 
       if (!isValidAddress(address)) {
-        this.marketplaceStatusMessage = '❌ 请输入有效的以太坊地址'
+        this.marketplaceStatusMessage = this.t('contractSetup.marketplace.invalid')
         this.marketplaceStatusType = 'error'
         return
       }
@@ -129,37 +154,40 @@ export default {
       try {
         contractService.setWeb3(web3Service.web3)
         const contract = contractService.setMarketplaceContract(address)
-        this.marketplaceStatusMessage = '✅ 市场合约设置成功！'
+        this.marketplaceStatusMessage = this.t('contractSetup.marketplace.success')
         this.marketplaceStatusType = 'success'
-        this.$emit('debug-info', `市场合约地址: ${address}`)
+        this.$emit('debug-info', `Marketplace contract address: ${address}`)
         this.$emit('marketplace-contract-set', contract)
       } catch (error) {
-        this.marketplaceStatusMessage = '❌ 市场合约设置失败: ' + error.message
+        this.marketplaceStatusMessage = this.t('contractSetup.marketplace.failed') + error.message
         this.marketplaceStatusType = 'error'
-        this.$emit('debug-info', `市场合约设置错误: ${error.message}`)
+        this.$emit('debug-info', `Marketplace contract error: ${error.message}`)
       }
     },
 
     async testStablecoinConnection(contract) {
       try {
-        this.$emit('debug-info', '开始测试稳定币合约连接...')
+        this.$emit('debug-info', this.t('contractSetup.stablecoin.testingConnection'))
         const name = await contract.methods.name().call()
         const symbol = await contract.methods.symbol().call()
-        this.$emit('debug-info', `稳定币合约名称: ${name}, 符号: ${symbol}`)
+        this.$emit('debug-info', `Stablecoin: ${name}, Symbol: ${symbol}`)
       } catch (error) {
-        this.$emit('debug-info', `稳定币合约连接测试失败: ${error.message}`)
+        this.$emit(
+          'debug-info',
+          this.t('contractSetup.stablecoin.connectionFailed') + error.message,
+        )
       }
     },
 
     async testNFTConnection(contract) {
       try {
-        this.$emit('debug-info', '开始测试NFT合约连接...')
+        this.$emit('debug-info', this.t('contractSetup.nft.testingConnection'))
         const name = await contract.methods.name().call()
         const symbol = await contract.methods.symbol().call()
         const owner = await contract.methods.owner().call()
-        this.$emit('debug-info', `NFT合约名称: ${name}, 符号: ${symbol}, 所有者: ${owner}`)
+        this.$emit('debug-info', `NFT: ${name}, Symbol: ${symbol}, Owner: ${owner}`)
       } catch (error) {
-        this.$emit('debug-info', `NFT合约连接测试失败: ${error.message}`)
+        this.$emit('debug-info', this.t('contractSetup.nft.connectionFailed') + error.message)
       }
     },
   },

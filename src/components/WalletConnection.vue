@@ -1,22 +1,22 @@
 <template>
   <div class="card">
-    <h2>🔗 连接钱包</h2>
+    <h2>{{ t('walletConnection.title') }}</h2>
     <button @click="connectMetaMask" :disabled="isConnected">
-      {{ isConnected ? '已连接' : '连接 MetaMask' }}
+      {{ isConnected ? t('walletConnection.connected') : t('walletConnection.button') }}
     </button>
     <div :class="['status', statusType]" v-if="statusMessage">{{ statusMessage }}</div>
 
     <div v-if="isConnected" id="walletInfo" class="wallet-info">
       <div class="wallet-info-item">
-        <strong>钱包地址</strong>
+        <strong>{{ t('walletConnection.walletAddress') }}</strong>
         <span class="contract-address">{{ accountAddress }}</span>
       </div>
       <div class="wallet-info-item">
-        <strong>网络</strong>
+        <strong>{{ t('walletConnection.network') }}</strong>
         <span>{{ networkName }}</span>
       </div>
       <div class="wallet-info-item">
-        <strong>链ID</strong>
+        <strong>{{ t('walletConnection.chainId') }}</strong>
         <span>{{ chainId }}</span>
       </div>
     </div>
@@ -26,9 +26,16 @@
 <script>
 import web3Service from '../services/web3Service'
 import { getNetworkName } from '../utils/helpers'
+import { getTranslation } from '../utils/i18n'
 
 export default {
   name: 'WalletConnection',
+  props: {
+    language: {
+      type: String,
+      default: 'en',
+    },
+  },
   data() {
     return {
       isConnected: false,
@@ -39,24 +46,23 @@ export default {
       statusType: 'success',
     }
   },
-  mounted() {
-    this.initWallet()
-  },
   methods: {
+    t(key) {
+      return getTranslation(this.language, key)
+    },
     initWallet() {
       if (!web3Service.isMetaMaskAvailable()) {
-        this.statusMessage = '❌ 未检测到 MetaMask，请先安装 MetaMask 浏览器扩展'
+        this.statusMessage = this.t('walletConnection.notDetected')
         this.statusType = 'error'
         return
       }
-      this.statusMessage = '✅ 已检测到 MetaMask，点击上方按钮连接'
+      this.statusMessage = this.t('walletConnection.detected')
       this.statusType = 'success'
 
-      // 监听账户变化
       web3Service.onAccountChanged((accounts) => {
         if (accounts.length === 0) {
           this.isConnected = false
-          this.statusMessage = '🔒 钱包已断开连接'
+          this.statusMessage = this.t('walletConnection.disconnected')
           this.statusType = 'error'
         } else {
           this.accountAddress = accounts[0]
@@ -64,7 +70,6 @@ export default {
         }
       })
 
-      // 监听网络变化
       web3Service.onChainChanged((chainId) => {
         this.chainId = chainId
         this.networkName = getNetworkName(chainId)
@@ -75,7 +80,7 @@ export default {
       if (this.isConnected) return
 
       try {
-        this.statusMessage = '🔄 正在连接 MetaMask...'
+        this.statusMessage = this.t('common.loading') + this.t('walletConnection.button')
         this.statusType = 'loading'
 
         await web3Service.initWeb3()
@@ -86,7 +91,7 @@ export default {
         this.chainId = result.chainId
         this.networkName = getNetworkName(result.chainId)
 
-        this.statusMessage = '✅ MetaMask 连接成功！'
+        this.statusMessage = this.t('walletConnection.success')
         this.statusType = 'success'
 
         this.$emit('wallet-connected', {
@@ -96,14 +101,17 @@ export default {
       } catch (error) {
         this.isConnected = false
         if (error.code === 4001) {
-          this.statusMessage = '❌ 用户拒绝了连接请求'
+          this.statusMessage = this.t('walletConnection.denied')
         } else {
-          this.statusMessage = '❌ 连接失败: ' + error.message
+          this.statusMessage = this.t('walletConnection.failed') + error.message
         }
         this.statusType = 'error'
         this.$emit('wallet-error', error)
       }
     },
+  },
+  mounted() {
+    this.initWallet()
   },
 }
 </script>

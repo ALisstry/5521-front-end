@@ -1,13 +1,17 @@
 <template>
   <div class="container">
+    <!-- 语言切换器 -->
+    <LanguageSwitcher v-model="language" />
+
     <!-- 页面头部 -->
     <header>
-      <h1>🎨 COMP5521 NFT 交易平台</h1>
-      <p>稳定币、NFT和市场合约交互测试平台</p>
+      <h1>{{ t('title') }}</h1>
+      <p>{{ t('subtitle') }}</p>
     </header>
 
     <!-- 钱包连接区域 -->
     <WalletConnection
+      :language="language"
       @wallet-connected="onWalletConnected"
       @wallet-error="onWalletError"
       @debug-info="addDebugInfo"
@@ -15,6 +19,7 @@
 
     <!-- 合约地址设置 -->
     <ContractSetup
+      :language="language"
       @stablecoin-contract-set="onStablecoinContractSet"
       @nft-contract-set="onNFTContractSet"
       @marketplace-contract-set="onMarketplaceContractSet"
@@ -29,18 +34,22 @@
         :class="['tab', { active: activeTab === tab.id }]"
         @click="activeTab = tab.id"
       >
-        {{ tab.label }}
+        {{ tabLabel(tab.id) }}
       </div>
     </div>
 
     <!-- 稳定币测试标签页 -->
     <div v-if="activeTab === 'stablecoin'" class="tab-content active">
-      <StablecoinTest :stablecoin-contract="stablecoinContract" @debug-info="addDebugInfo" />
+      <StablecoinTest
+        :stablecoin-contract="stablecoinContract"
+        :language="language"
+        @debug-info="addDebugInfo"
+      />
     </div>
 
     <!-- NFT测试标签页 -->
     <div v-if="activeTab === 'nft'" class="tab-content active">
-      <NFTTest :nft-contract="nftContract" @debug-info="addDebugInfo" />
+      <NFTTest :nft-contract="nftContract" :language="language" @debug-info="addDebugInfo" />
     </div>
 
     <!-- 市场直接购买标签页 -->
@@ -48,6 +57,7 @@
       <MarketplaceDirect
         :marketplace-contract="marketplaceContract"
         :nft-contract="nftContract"
+        :language="language"
         @debug-info="addDebugInfo"
       />
     </div>
@@ -57,13 +67,14 @@
       <MarketplaceAuction
         :marketplace-contract="marketplaceContract"
         :nft-contract="nftContract"
+        :language="language"
         @debug-info="addDebugInfo"
       />
     </div>
 
     <!-- 调试信息标签页 -->
     <div v-if="activeTab === 'debug'" class="tab-content active">
-      <DebugInfo ref="debugComponent" />
+      <DebugInfo :language="language" ref="debugComponent" />
     </div>
   </div>
 </template>
@@ -76,6 +87,8 @@ import NFTTest from './components/NFTTest.vue'
 import MarketplaceDirect from './components/MarketplaceDirect.vue'
 import MarketplaceAuction from './components/MarketplaceAuction.vue'
 import DebugInfo from './components/DebugInfo.vue'
+import LanguageSwitcher from './components/LanguageSwitcher.vue'
+import { getTranslation } from './utils/i18n.js'
 
 export default {
   name: 'App',
@@ -87,16 +100,18 @@ export default {
     MarketplaceDirect,
     MarketplaceAuction,
     DebugInfo,
+    LanguageSwitcher,
   },
   data() {
     return {
+      language: 'en',
       activeTab: 'stablecoin',
       tabs: [
-        { id: 'stablecoin', label: '💰 稳定币测试' },
-        { id: 'nft', label: '🎨 NFT测试' },
-        { id: 'marketplace', label: '🏪 市场直接购买' },
-        { id: 'auction', label: '⚡ 市场拍卖' },
-        { id: 'debug', label: '🐛 调试信息' },
+        { id: 'stablecoin' },
+        { id: 'nft' },
+        { id: 'marketplace' },
+        { id: 'auction' },
+        { id: 'debug' },
       ],
       stablecoinContract: null,
       nftContract: null,
@@ -104,23 +119,31 @@ export default {
     }
   },
   methods: {
+    t(key) {
+      return getTranslation(this.language, key)
+    },
+    tabLabel(tabId) {
+      return getTranslation(this.language, `tabs.${tabId}`)
+    },
     onWalletConnected(data) {
-      this.addDebugInfo(`钱包已连接: ${data.account}, 链ID: ${data.chainId}`)
+      this.addDebugInfo(
+        `${this.t('walletConnection.success')} ${data.account}, ChainID: ${data.chainId}`,
+      )
     },
     onWalletError(error) {
-      this.addDebugInfo(`钱包连接错误: ${error.message}`)
+      this.addDebugInfo(`${this.t('walletConnection.failed')} ${error.message}`)
     },
     onStablecoinContractSet(contract) {
       this.stablecoinContract = contract
-      this.addDebugInfo('稳定币合约已设置')
+      this.addDebugInfo(`${this.t('contractSetup.stablecoin.success')}`)
     },
     onNFTContractSet(contract) {
       this.nftContract = contract
-      this.addDebugInfo('NFT合约已设置')
+      this.addDebugInfo(`${this.t('contractSetup.nft.success')}`)
     },
     onMarketplaceContractSet(contract) {
       this.marketplaceContract = contract
-      this.addDebugInfo('市场合约已设置')
+      this.addDebugInfo(`${this.t('contractSetup.marketplace.success')}`)
     },
     addDebugInfo(message) {
       if (this.$refs.debugComponent) {
@@ -129,7 +152,11 @@ export default {
     },
   },
   mounted() {
-    this.addDebugInfo('应用已加载')
+    const savedLanguage = localStorage.getItem('language')
+    if (savedLanguage) {
+      this.language = savedLanguage
+    }
+    this.addDebugInfo('Application loaded')
   },
 }
 </script>

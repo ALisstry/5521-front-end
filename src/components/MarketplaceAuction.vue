@@ -1,9 +1,9 @@
 <template>
   <div class="card">
-    <h2>⚡ 市场拍卖</h2>
+    <h2>{{ t('marketplaceAuction.title') }}</h2>
     <div class="marketplace-actions">
-      <button @click="loadActiveAuctions">🔄 加载活跃拍卖</button>
-      <button @click="finalizeExpiredAuctions">⏰ 结束过期拍卖</button>
+      <button @click="loadActiveAuctions">{{ t('marketplaceAuction.loadAuctions') }}</button>
+      <button @click="finalizeExpiredAuctions">{{ t('marketplaceAuction.finalize') }}</button>
     </div>
     <div class="nft-grid" v-if="auctions.length > 0">
       <div v-for="auction in auctions" :key="auction.tokenId" class="nft-card">
@@ -12,43 +12,44 @@
           <div class="nft-title">{{ auction.name }}</div>
           <div class="nft-id">Token ID: {{ auction.tokenId }}</div>
           <div class="nft-owner">
-            卖家: {{ auction.seller.substring(0, 8) }}...{{
+            {{ t('marketplaceAuction.seller') }} {{ auction.seller.substring(0, 8) }}...{{
               auction.seller.substring(auction.seller.length - 6)
             }}
           </div>
           <div class="auction-info">
-            <div><strong>当前最高出价:</strong> {{ auction.currentBid }} C5D</div>
-            <div><strong>下一次出价:</strong> {{ auction.nextBidAmount }} C5D</div>
-            <div><strong>剩余时间:</strong> {{ auction.timeRemaining }}</div>
-            <div><strong>固定加价:</strong> {{ auction.fixedBidIncrement }} C5D</div>
+            <div><strong>{{ t('marketplaceAuction.currentBid') }}</strong> {{ auction.currentBid }} C5D</div>
+            <div><strong>{{ t('marketplaceAuction.nextBid') }}</strong> {{ auction.nextBidAmount }} C5D</div>
+            <div><strong>{{ t('marketplaceAuction.timeRemaining') }}</strong> {{ auction.timeRemaining }}</div>
+            <div><strong>{{ t('marketplaceAuction.bidIncrement') }}</strong> {{ auction.fixedBidIncrement }} C5D</div>
             <div v-if="auction.hasBids">
-              <strong>最高出价者:</strong> {{ auction.highestBidder.substring(0, 8) }}...{{
+              <strong>{{ t('marketplaceAuction.highestBidder') }}</strong> {{ auction.highestBidder.substring(0, 8) }}...{{
                 auction.highestBidder.substring(auction.highestBidder.length - 6)
               }}
             </div>
-            <div v-else><strong>状态:</strong> 暂无出价</div>
+            <div v-else><strong>{{ t('marketplaceAuction.noBids') }}</strong></div>
             <div
               v-if="auction.hasBids"
               class="status error"
               style="margin-top: 10px; padding: 8px; font-size: 12px"
             >
-              <strong>⚠️ 注意:</strong> 已有出价，拍卖无法取消
+              <strong>{{ t('marketplaceAuction.warning') }}</strong>
             </div>
           </div>
           <div class="marketplace-actions">
-            <button class="btn-warning" @click="placeBid(auction.tokenId)">出价</button>
+            <button class="btn-warning" @click="placeBid(auction.tokenId)">{{ t('marketplaceAuction.bid') }}</button>
           </div>
         </div>
       </div>
     </div>
-    <div v-else-if="!loading" class="status">暂无活跃拍卖</div>
-    <div v-else class="status loading">🔄 加载中...</div>
+    <div v-else-if="!loading" class="status">{{ t('marketplaceAuction.noAuctions') }}</div>
+    <div v-else class="status loading">{{ t('common.loading') }}</div>
   </div>
 </template>
 
 <script>
 import web3Service from '../services/web3Service'
 import { formatTimeRemaining } from '../utils/helpers'
+import { getTranslation } from '../utils/i18n'
 
 export default {
   name: 'MarketplaceAuction',
@@ -61,6 +62,10 @@ export default {
       type: Object,
       default: null,
     },
+    language: {
+      type: String,
+      default: 'en',
+    },
   },
   data() {
     return {
@@ -70,9 +75,12 @@ export default {
     }
   },
   methods: {
+    t(key) {
+      return getTranslation(this.language, key)
+    },
     async loadActiveAuctions() {
       if (!this.marketplaceContract) {
-        alert('请先设置市场合约地址')
+        alert(this.t('marketplaceAuction.notSet'))
         return
       }
 
@@ -108,7 +116,7 @@ export default {
               nftName = metadata.name || nftName
             }
           } catch (e) {
-            this.$emit('debug-info', `获取NFT #${tokenId} 元数据失败: ${e.message}`)
+            this.$emit('debug-info', `Get NFT #${tokenId} metadata error: ${e.message}`)
           }
 
           let auctionStatus
@@ -150,10 +158,10 @@ export default {
           })
         }
 
-        this.$emit('debug-info', `加载了 ${this.auctions.length} 个活跃拍卖`)
+        this.$emit('debug-info', `Loaded ${this.auctions.length} auctions`)
       } catch (error) {
-        alert('加载活跃拍卖失败: ' + error.message)
-        this.$emit('debug-info', `加载活跃拍卖错误: ${error.message}`)
+        alert(this.t('marketplaceAuction.loadingFailed') + error.message)
+        this.$emit('debug-info', `Load auctions error: ${error.message}`)
       } finally {
         this.loading = false
       }
@@ -161,7 +169,7 @@ export default {
 
     async placeBid(tokenId) {
       if (!this.marketplaceContract || !web3Service.getAccount()) {
-        alert('请先连接钱包并设置市场合约')
+        alert(this.t('marketplaceAuction.notConnected'))
         return
       }
 
@@ -170,19 +178,19 @@ export default {
           from: web3Service.getAccount(),
         })
 
-        alert(`出价成功！交易哈希: ${result.transactionHash}`)
-        this.$emit('debug-info', `对NFT #${tokenId} 出价交易: ${result.transactionHash}`)
+        alert(`${this.t('marketplaceAuction.bidSuccess')}${result.transactionHash}`)
+        this.$emit('debug-info', `Bid NFT #${tokenId} tx: ${result.transactionHash}`)
 
         this.loadActiveAuctions()
       } catch (error) {
-        alert(`出价失败: ${error.message}`)
-        this.$emit('debug-info', `对NFT #${tokenId} 出价错误: ${error.message}`)
+        alert(this.t('marketplaceAuction.bidFailed') + error.message)
+        this.$emit('debug-info', `Bid error: ${error.message}`)
       }
     },
 
     async finalizeExpiredAuctions() {
       if (!this.marketplaceContract || !web3Service.getAccount()) {
-        alert('请先连接钱包并设置市场合约')
+        alert(this.t('marketplaceAuction.notConnected'))
         return
       }
 
@@ -191,13 +199,13 @@ export default {
           from: web3Service.getAccount(),
         })
 
-        alert(`结束过期拍卖成功！交易哈希: ${result.transactionHash}`)
-        this.$emit('debug-info', `结束过期拍卖交易: ${result.transactionHash}`)
+        alert(`${this.t('marketplaceAuction.finalizeSuccess')}${result.transactionHash}`)
+        this.$emit('debug-info', `Finalize auctions tx: ${result.transactionHash}`)
 
         this.loadActiveAuctions()
       } catch (error) {
-        alert(`结束过期拍卖失败: ${error.message}`)
-        this.$emit('debug-info', `结束过期拍卖错误: ${error.message}`)
+        alert(this.t('marketplaceAuction.finalizeFailed') + error.message)
+        this.$emit('debug-info', `Finalize error: ${error.message}`)
       }
     },
   },
