@@ -111,7 +111,7 @@ export default {
         { id: 'nft' },
         { id: 'marketplace' },
         { id: 'auction' },
-        { id: 'debug' },
+        // { id: 'debug' },
       ],
       stablecoinContract: null,
       nftContract: null,
