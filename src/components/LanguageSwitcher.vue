@@ -1,13 +1,8 @@
 <template>
   <div class="language-switcher">
-    <button
-      v-for="lang in languages"
-      :key="lang.code"
-      :class="['lang-btn', { active: currentLanguage === lang.code }]"
-      @click="switchLanguage(lang.code)"
-    >
-      {{ lang.name }}
-    </button>
+    <select class="lang-select" v-model="currentLanguage" @change="onChange">
+      <option v-for="lang in languages" :key="lang.code" :value="lang.code">{{ lang.name }}</option>
+    </select>
   </div>
 </template>
 
@@ -35,10 +30,9 @@ export default {
     },
   },
   methods: {
-    switchLanguage(lang) {
-      this.currentLanguage = lang
-      this.$emit('update:modelValue', lang)
-      localStorage.setItem('language', lang)
+    onChange() {
+      this.$emit('update:modelValue', this.currentLanguage)
+      localStorage.setItem('language', this.currentLanguage)
     },
   },
 }
@@ -46,38 +40,19 @@ export default {
 
 <style scoped>
 .language-switcher {
-  display: flex;
-  gap: 8px;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px;
+  width: 100%;
+}
+.lang-select {
+  width: 100%;
+  padding: 8px 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
 }
-
-.lang-btn {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: #f5f5f5;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.lang-btn:hover {
-  background: #e8e8e8;
-  border-color: #999;
-}
-
-.lang-btn.active {
-  background: #007bff;
-  color: white;
-  border-color: #0056b3;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+.lang-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.06);
 }
 </style>

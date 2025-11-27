@@ -1,0 +1,359 @@
+/* Modern layout styles for the NFT platform */
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --muted: #9aa4b2;
+  --accent: #4f46e5;
+  --accent-2: #06b6d4;
+  --glass: rgba(255, 255, 255, 0.04);
+  --radius: 12px;
+  --text: #e6eef8;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
+  background: linear-gradient(180deg, #071029 0%, #071822 100%);
+  color: var(--text);
+}
+.container {
+  display: flex;
+  min-height: 100vh;
+  gap: 24px;
+  padding: 24px;
+}
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border-radius: var(--radius);
+  padding: 18px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 30px rgba(2, 6, 23, 0.6);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.brand .logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+}
+.brand h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.sidebar .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.nav .nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.nav .nav-btn:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+.nav .nav-btn.active {
+  background: linear-gradient(90deg, rgba(79, 70, 229, 0.12), rgba(6, 182, 212, 0.06));
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.06);
+}
+.sidebar .small {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+/* Main area */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.header .title {
+  display: flex;
+  flex-direction: column;
+}
+.header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+.header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.header .actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: var(--card);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 30px rgba(2, 6, 23, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+.nft-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  grid-auto-flow: dense;
+}
+
+/* Contract setup specific styling to match card tone */
+.contract-setup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.contract-setup .contract-item {
+  flex: 1 1 300px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: 10px;
+}
+.contract-setup .contract-item h3 {
+  margin: 0 0 8px 0;
+  color: var(--text);
+}
+.contract-address {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card) !important;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.contract-setup button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: white;
+  cursor: pointer;
+}
+.contract-setup .status {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+/* Language select should blend with sidebar/card tone */
+.language-switcher .lang-select {
+  background: var(--card) !important;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.nft-card {
+  background: var(--card);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+.mint-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nft-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.marketplace-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status {
+  padding: 8px;
+  border-radius: 8px;
+}
+.status.loading {
+  background: rgba(255, 255, 255, 0.02);
+}
+.btn-success {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-danger {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-warning {
+  background: linear-gradient(90deg, #f59e0b, #f97316);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* Override old style.css defaults for inputs and card backgrounds */
+input,
+textarea,
+select {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted) !important;
+  opacity: 0.7;
+}
+
+/* Override white card backgrounds from style.css */
+.card {
+  background: var(--card) !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent) !important;
+  color: var(--text) !important;
+}
+.card h2 {
+  color: var(--accent) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+}
+.card h3 {
+  color: var(--text) !important;
+}
+
+/* Ensure contract items match the theme */
+.contract-item {
+  background: var(--card) !important;
+  border-color: rgba(255, 255, 255, 0.03) !important;
+  color: var(--text) !important;
+}
+.contract-item strong {
+  color: var(--accent) !important;
+}
+
+/* Override wallet info styling */
+.wallet-info-item {
+  background: var(--card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  color: var(--text) !important;
+}
+.wallet-info-item strong {
+  color: var(--accent) !important;
+}
+
+/* Status messages in dark theme */
+.status {
+  border-radius: 8px;
+  margin: 8px 0;
+}
+.status.success {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+.status.error {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+.status.loading {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Button styling for dark theme */
+button {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2)) !important;
+  color: white !important;
+  border: none !important;
+}
+button:hover {
+  transform: translateY(-2px) !important;
+}
+button:disabled {
+  background: var(--muted) !important;
+  opacity: 0.5 !important;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sidebar {
+    display: none;
+  }
+  .container {
+    padding: 12px;
+  }
+}
+@media (max-width: 600px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}

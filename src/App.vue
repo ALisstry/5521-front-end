@@ -1,81 +1,88 @@
 <template>
   <div class="container">
-    <!-- 语言切换器 -->
-    <LanguageSwitcher v-model="language" />
-
-    <!-- 页面头部 -->
-    <header>
-      <h1>{{ t('title') }}</h1>
-      <p>{{ t('subtitle') }}</p>
-    </header>
-
-    <!-- 钱包连接区域 -->
-    <WalletConnection
-      :language="language"
-      @wallet-connected="onWalletConnected"
-      @wallet-error="onWalletError"
-      @debug-info="addDebugInfo"
-    />
-
-    <!-- 合约地址设置 -->
-    <ContractSetup
-      :language="language"
-      @stablecoin-contract-set="onStablecoinContractSet"
-      @nft-contract-set="onNFTContractSet"
-      @marketplace-contract-set="onMarketplaceContractSet"
-      @debug-info="addDebugInfo"
-    />
-
-    <!-- 标签页导航 -->
-    <div class="tabs">
-      <div
-        v-for="tab in tabs"
-        :key="tab.id"
-        :class="['tab', { active: activeTab === tab.id }]"
-        @click="activeTab = tab.id"
-      >
-        {{ tabLabel(tab.id) }}
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">NFT</div>
+        <h3>{{ t('title') }}</h3>
       </div>
-    </div>
+      <div class="small">{{ t('subtitle') }}</div>
 
-    <!-- 稳定币测试标签页 -->
-    <div v-if="activeTab === 'stablecoin'" class="tab-content active">
-      <StablecoinTest
-        :stablecoin-contract="stablecoinContract"
+      <div class="nav">
+        <div
+          v-for="tab in tabs"
+          :key="tab.id"
+          :class="['nav-btn', { active: activeTab === tab.id }]"
+          @click="activeTab = tab.id"
+        >
+          {{ tabLabel(tab.id) }}
+        </div>
+      </div>
+
+      <div style="margin-top: 16px">
+        <LanguageSwitcher v-model="language" />
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <div class="title">
+          <h1>{{ t('title') }}</h1>
+          <p>{{ t('subtitle') }}</p>
+        </div>
+        <div class="actions">
+          <WalletConnection
+            :language="language"
+            @wallet-connected="onWalletConnected"
+            @wallet-error="onWalletError"
+            @debug-info="addDebugInfo"
+          />
+        </div>
+      </div>
+
+      <ContractSetup
         :language="language"
+        @stablecoin-contract-set="onStablecoinContractSet"
+        @nft-contract-set="onNFTContractSet"
+        @marketplace-contract-set="onMarketplaceContractSet"
         @debug-info="addDebugInfo"
       />
-    </div>
 
-    <!-- NFT测试标签页 -->
-    <div v-if="activeTab === 'nft'" class="tab-content active">
-      <NFTTest :nft-contract="nftContract" :language="language" @debug-info="addDebugInfo" />
-    </div>
+      <div class="content">
+        <div v-if="activeTab === 'stablecoin'">
+          <StablecoinTest
+            :stablecoin-contract="stablecoinContract"
+            :language="language"
+            @debug-info="addDebugInfo"
+          />
+        </div>
 
-    <!-- 市场直接购买标签页 -->
-    <div v-if="activeTab === 'marketplace'" class="tab-content active">
-      <MarketplaceDirect
-        :marketplace-contract="marketplaceContract"
-        :nft-contract="nftContract"
-        :language="language"
-        @debug-info="addDebugInfo"
-      />
-    </div>
+        <div v-if="activeTab === 'nft'">
+          <NFTTest :nft-contract="nftContract" :language="language" @debug-info="addDebugInfo" />
+        </div>
 
-    <!-- 市场拍卖标签页 -->
-    <div v-if="activeTab === 'auction'" class="tab-content active">
-      <MarketplaceAuction
-        :marketplace-contract="marketplaceContract"
-        :nft-contract="nftContract"
-        :language="language"
-        @debug-info="addDebugInfo"
-      />
-    </div>
+        <div v-if="activeTab === 'marketplace'">
+          <MarketplaceDirect
+            :marketplace-contract="marketplaceContract"
+            :nft-contract="nftContract"
+            :language="language"
+            @debug-info="addDebugInfo"
+          />
+        </div>
 
-    <!-- 调试信息标签页 -->
-    <div v-if="activeTab === 'debug'" class="tab-content active">
-      <DebugInfo :language="language" ref="debugComponent" />
-    </div>
+        <div v-if="activeTab === 'auction'">
+          <MarketplaceAuction
+            :marketplace-contract="marketplaceContract"
+            :nft-contract="nftContract"
+            :language="language"
+            @debug-info="addDebugInfo"
+          />
+        </div>
+
+        <div v-if="activeTab === 'debug'">
+          <DebugInfo :language="language" ref="debugComponent" />
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
