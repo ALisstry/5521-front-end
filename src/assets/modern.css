@@ -1,13 +1,24 @@
-/* Modern layout styles for the NFT platform */
+/* Modern layout styles for the NFT platform - Simple & Clean */
 :root {
-  --bg: #0f1724;
-  --card: #0b1220;
-  --muted: #9aa4b2;
-  --accent: #4f46e5;
-  --accent-2: #06b6d4;
-  --glass: rgba(255, 255, 255, 0.04);
-  --radius: 12px;
-  --text: #e6eef8;
+  /* Light theme */
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #10b981;
+  --accent-2: #059669;
+  --border: #e5e7eb;
+  --text: #1f2937;
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+  --bg: #111827;
+  --card: #1f2937;
+  --muted: #9ca3af;
+  --accent: #10b981;
+  --accent-2: #059669;
+  --border: #374151;
+  --text: #f3f4f6;
 }
 * {
   box-sizing: border-box;
@@ -20,98 +31,116 @@ body,
 body {
   margin: 0;
   font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial;
-  background: linear-gradient(180deg, #071029 0%, #071822 100%);
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
   color: var(--text);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 .container {
   display: flex;
   min-height: 100vh;
-  gap: 24px;
-  padding: 24px;
+  gap: 20px;
+  padding: 20px;
 }
 /* Sidebar */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border-radius: var(--radius);
-  padding: 18px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 30px rgba(2, 6, 23, 0.6);
+  background: var(--card);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
 }
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .brand .logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: 600;
   color: white;
+  font-size: 16px;
 }
 .brand h3 {
   margin: 0;
   font-size: 16px;
+  font-weight: 600;
 }
 .sidebar .nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 4px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .nav .nav-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   color: var(--muted);
   cursor: pointer;
-  border: 1px solid transparent;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 .nav .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--border);
   color: var(--text);
 }
 .nav .nav-btn.active {
-  background: linear-gradient(90deg, rgba(79, 70, 229, 0.12), rgba(6, 182, 212, 0.06));
-  color: var(--text);
-  box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.06);
+  background: var(--accent);
+  color: white;
 }
 .sidebar .small {
   font-size: 12px;
   color: var(--muted);
-  margin-top: 12px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.sidebar-controls {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.control-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 /* Main area */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
-  border-radius: var(--radius);
-  background: var(--glass);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 .header .title {
   display: flex;
@@ -119,12 +148,14 @@ body {
 }
 .header h1 {
   margin: 0;
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 600;
 }
 .header p {
   margin: 0;
   font-size: 13px;
   color: var(--muted);
+  margin-top: 4px;
 }
 .header .actions {
   display: flex;
@@ -133,81 +164,100 @@ body {
 }
 .content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 .card {
   background: var(--card);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 6px 30px rgba(2, 6, 23, 0.45);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  transition: all 0.2s ease;
+}
+.card:hover {
+  border-color: var(--accent);
 }
 .nft-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
 }
 
-/* Contract setup specific styling to match card tone */
+/* Contract setup specific styling */
 .contract-setup {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 .contract-setup .contract-item {
-  flex: 1 1 300px;
+  flex: 1 1 280px;
   background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 8px;
 }
 .contract-setup .contract-item h3 {
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
 }
 .contract-address {
   width: 100%;
   padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  background: var(--card) !important;
+  border-radius: 6px;
+  border: 1px solid var(--border) !important;
+  background: var(--bg) !important;
   color: var(--text);
   margin-bottom: 8px;
+  font-size: 12px;
 }
 .contract-setup button {
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   border: none;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   color: white;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.contract-setup button:hover {
+  opacity: 0.9;
 }
 .contract-setup .status {
   margin-top: 8px;
   color: var(--muted);
+  font-size: 12px;
 }
 
-/* Language select should blend with sidebar/card tone */
+/* Language & Theme select */
 .language-switcher .lang-select {
-  background: var(--card) !important;
+  background: var(--bg) !important;
   color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border) !important;
   -webkit-appearance: none;
   appearance: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 100%;
 }
 .nft-card {
   background: var(--card);
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  transition: all 0.2s ease;
+}
+.nft-card:hover {
+  border-color: var(--accent);
 }
 .mint-card {
   width: 100%;
@@ -217,9 +267,9 @@ body {
 }
 .nft-image {
   width: 100%;
-  height: 160px;
+  height: 150px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 .marketplace-actions {
   display: flex;
@@ -227,117 +277,142 @@ body {
   flex-wrap: wrap;
 }
 .status {
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  font-size: 12px;
+  border: 1px solid;
 }
 .status.loading {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg);
+  color: var(--muted);
 }
 .btn-success {
-  background: linear-gradient(90deg, #10b981, #06b6d4);
+  background: #10b981;
   border: none;
   color: white;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
 }
 .btn-danger {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
+  background: #ef4444;
   border: none;
   color: white;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
 }
 .btn-warning {
-  background: linear-gradient(90deg, #f59e0b, #f97316);
+  background: #f59e0b;
   border: none;
   color: white;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
 }
-/* Override old style.css defaults for inputs and card backgrounds */
+/* Override inputs and backgrounds */
 input,
 textarea,
 select {
-  background: var(--card) !important;
+  background: var(--bg) !important;
   color: var(--text) !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  padding: 8px 10px !important;
+  font-size: 13px !important;
 }
 input::placeholder,
 textarea::placeholder {
   color: var(--muted) !important;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-/* Override white card backgrounds from style.css */
+/* Card overrides */
 .card {
   background: var(--card) !important;
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent) !important;
   color: var(--text) !important;
+  border: 1px solid var(--border) !important;
 }
 .card h2 {
-  color: var(--accent) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 12px !important;
 }
 .card h3 {
   color: var(--text) !important;
 }
 
-/* Ensure contract items match the theme */
 .contract-item {
   background: var(--card) !important;
-  border-color: rgba(255, 255, 255, 0.03) !important;
+  border-color: var(--border) !important;
   color: var(--text) !important;
 }
 .contract-item strong {
   color: var(--accent) !important;
 }
 
-/* Override wallet info styling */
 .wallet-info-item {
-  background: var(--card) !important;
-  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  background: var(--bg) !important;
+  border: 1px solid var(--border) !important;
   color: var(--text) !important;
 }
 .wallet-info-item strong {
   color: var(--accent) !important;
 }
 
-/* Status messages in dark theme */
+/* Status messages */
 .status {
-  border-radius: 8px;
+  border-radius: 6px;
   margin: 8px 0;
+  padding: 10px 12px;
 }
 .status.success {
-  background: rgba(16, 185, 129, 0.15) !important;
+  background: rgba(16, 185, 129, 0.1) !important;
   color: #10b981 !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
+  border: 1px solid #10b981 !important;
 }
 .status.error {
-  background: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
   color: #ef4444 !important;
-  border-color: rgba(239, 68, 68, 0.3) !important;
+  border: 1px solid #ef4444 !important;
 }
 .status.loading {
-  background: rgba(245, 158, 11, 0.15) !important;
-  color: #fbbf24 !important;
-  border-color: rgba(245, 158, 11, 0.3) !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #f59e0b !important;
+  border: 1px solid #f59e0b !important;
 }
 
-/* Button styling for dark theme */
+/* Buttons */
 button {
-  background: linear-gradient(90deg, var(--accent), var(--accent-2)) !important;
+  background: var(--accent) !important;
   color: white !important;
   border: none !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
 }
 button:hover {
-  transform: translateY(-2px) !important;
+  opacity: 0.9 !important;
+  transform: none !important;
+}
+button:active {
+  opacity: 0.8 !important;
 }
 button:disabled {
   background: var(--muted) !important;
   opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 /* Responsive */
@@ -350,10 +425,19 @@ button:disabled {
   }
   .container {
     padding: 12px;
+    gap: 12px;
   }
 }
 @media (max-width: 600px) {
   .content {
     grid-template-columns: 1fr;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header .actions {
+    width: 100%;
+    margin-top: 12px;
   }
 }

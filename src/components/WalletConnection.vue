@@ -44,26 +44,33 @@ export default {
       networkName: '',
       statusMessage: '',
       statusType: 'success',
+      // track message key so it can be recomputed when language changes
+      statusKey: null,
+      statusMeta: null,
     }
   },
   methods: {
     t(key) {
       return getTranslation(this.language, key)
     },
+    setStatus(key, type = 'success', meta = null) {
+      this.statusKey = key
+      this.statusType = type
+      this.statusMeta = meta
+      const base = key ? this.t(`walletConnection.${key}`) : ''
+      this.statusMessage = base + (meta ? meta : '')
+    },
     initWallet() {
       if (!web3Service.isMetaMaskAvailable()) {
-        this.statusMessage = this.t('walletConnection.notDetected')
-        this.statusType = 'error'
+        this.setStatus('notDetected', 'error')
         return
       }
-      this.statusMessage = this.t('walletConnection.detected')
-      this.statusType = 'success'
+      this.setStatus('detected', 'success')
 
       web3Service.onAccountChanged((accounts) => {
         if (accounts.length === 0) {
           this.isConnected = false
-          this.statusMessage = this.t('walletConnection.disconnected')
-          this.statusType = 'error'
+          this.setStatus('disconnected', 'error')
         } else {
           this.accountAddress = accounts[0]
           this.$emit('account-changed', accounts[0])
@@ -80,8 +87,12 @@ export default {
       if (this.isConnected) return
 
       try {
-        this.statusMessage = this.t('common.loading') + this.t('walletConnection.button')
-        this.statusType = 'loading'
+        // show loading with button label; keep meta so it can be recomputed
+        this.setStatus(
+          null,
+          'loading',
+          this.t('common.loading') + this.t('walletConnection.button'),
+        )
 
         await web3Service.initWeb3()
         const result = await web3Service.connectWallet()
@@ -91,8 +102,7 @@ export default {
         this.chainId = result.chainId
         this.networkName = getNetworkName(result.chainId)
 
-        this.statusMessage = this.t('walletConnection.success')
-        this.statusType = 'success'
+        this.setStatus('success', 'success')
 
         this.$emit('wallet-connected', {
           account: result.account,
@@ -101,12 +111,25 @@ export default {
       } catch (error) {
         this.isConnected = false
         if (error.code === 4001) {
-          this.statusMessage = this.t('walletConnection.denied')
+          this.setStatus('denied', 'error')
         } else {
-          this.statusMessage = this.t('walletConnection.failed') + error.message
+          this.setStatus('failed', 'error', error.message)
         }
-        this.statusType = 'error'
         this.$emit('wallet-error', error)
+      }
+    },
+  },
+  watch: {
+    language(newLang) {
+      // recompute statusMessage when language changes
+      if (this.statusKey || this.statusMeta) {
+        const meta = this.statusMeta
+        if (this.statusKey) {
+          this.statusMessage = this.t(`walletConnection.${this.statusKey}`) + (meta ? meta : '')
+        } else {
+          // statusKey is null but there may be meta (like loading + button label)
+          this.statusMessage = meta ? meta : ''
+        }
       }
     },
   },

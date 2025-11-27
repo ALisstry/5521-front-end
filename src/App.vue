@@ -18,8 +18,15 @@
         </div>
       </div>
 
-      <div style="margin-top: 16px">
-        <LanguageSwitcher v-model="language" />
+      <div class="sidebar-controls">
+        <div style="margin-bottom: 12px">
+          <label class="control-label">Language</label>
+          <LanguageSwitcher v-model="language" />
+        </div>
+        <div>
+          <label class="control-label">Theme</label>
+          <ThemeSwitcher v-model="theme" />
+        </div>
       </div>
     </aside>
 
@@ -95,6 +102,7 @@ import MarketplaceDirect from './components/MarketplaceDirect.vue'
 import MarketplaceAuction from './components/MarketplaceAuction.vue'
 import DebugInfo from './components/DebugInfo.vue'
 import LanguageSwitcher from './components/LanguageSwitcher.vue'
+import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import { getTranslation } from './utils/i18n.js'
 
 export default {
@@ -108,10 +116,12 @@ export default {
     MarketplaceAuction,
     DebugInfo,
     LanguageSwitcher,
+    ThemeSwitcher,
   },
   data() {
     return {
       language: 'en',
+      theme: 'dark',
       activeTab: 'stablecoin',
       tabs: [
         { id: 'stablecoin' },
@@ -163,6 +173,9 @@ export default {
     if (savedLanguage) {
       this.language = savedLanguage
     }
+    const savedTheme = localStorage.getItem('theme') || 'dark'
+    this.theme = savedTheme
+    document.documentElement.setAttribute('data-theme', savedTheme)
     this.addDebugInfo('Application loaded')
   },
 }
